@@ -1,4 +1,9 @@
+from cryptography.fernet import Fernet
 from random import randint
+import time
+import datetime
+import base64
+import os
 
 def IsPrime(num):
     for n in range(2,int(num**1/2)+1):
@@ -11,7 +16,7 @@ def GenerateGenerator():
 
 def GeneratePrime():
     while True:
-        numb = randint(10000000, 100000000)
+        numb = randint(100000, 1000000)
         if(IsPrime(numb)):
             prime = numb
             break
@@ -36,8 +41,23 @@ gb = gb_1%n
 # Person A
 key_1 = gb ** a
 key = key_1%n
-print(key)
+
+
+# Entrypt with Key
+keyraw = '{:032b}'.format(key)
+fernet = Fernet(base64.urlsafe_b64encode(bytes(keyraw,encoding='utf8')))
+encrypted = fernet.encrypt(b"original")
+print(encrypted)
+
+
+
 # Person B
 key_1 = ga ** b
 key = key_1%n
-print(key)
+
+
+# Decrypt with Key
+keyraw = '{:032b}'.format(key)
+fernet = Fernet(base64.urlsafe_b64encode(bytes(keyraw,encoding='utf8')))
+decrypted = fernet.decrypt(encrypted)
+print(decrypted.decode('ascii'))
